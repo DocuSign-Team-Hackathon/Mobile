@@ -16,6 +16,8 @@ class PreApplication extends StatefulWidget {
 }
 
 class _PreApplicationState extends State<PreApplication> {
+  bool check1 = false;
+  bool check2 = false;
   TextEditingController firstName = TextEditingController();
   TextEditingController lastName = TextEditingController();
   TextEditingController age = TextEditingController();
@@ -48,8 +50,8 @@ class _PreApplicationState extends State<PreApplication> {
                   trailing: Image.asset('assets/coco.png'),
                 ),
               ),
-              textFieldInput(controller: firstName, label: 'First Name'),
-              textFieldInput(controller: lastName, label: 'Last Name'),
+              textFieldInput(context,controller: firstName, label: 'First Name'),
+              textFieldInput(context,controller: lastName, label: 'Last Name'),
               FormBuilderDropdown(
                 name: 'gender',
                 decoration: InputDecoration(
@@ -72,21 +74,21 @@ class _PreApplicationState extends State<PreApplication> {
                         ))
                     .toList(),
               ),
-              textFieldInput(
+              textFieldInput(context,
                   controller: age,
                   label: 'Age',
                   keyboardType: TextInputType.number),
-              textFieldInput(controller: address, label: 'Address'),
-              textFieldInput(controller: city, label: 'City'),
-              textFieldInput(
+              textFieldInput(context,controller: address, label: 'Address'),
+              textFieldInput(context,controller: city, label: 'City'),
+              textFieldInput(context,
                   controller: zipcode,
                   label: 'Zip Code',
                   keyboardType: TextInputType.number),
-              textFieldInput(
+              textFieldInput(context,
                   controller: phoneNumber,
                   label: 'Phone Number',
                   keyboardType: TextInputType.number),
-              textFieldInput(
+              textFieldInput(context,
                   controller: email,
                   label: 'Email',
                   keyboardType: TextInputType.emailAddress),
@@ -94,6 +96,13 @@ class _PreApplicationState extends State<PreApplication> {
                 name: 'accept_terms',
                 initialValue: false,
                 decoration: InputDecoration.collapsed(border: InputBorder.none),
+
+                onChanged: (v){
+                  setState(() {
+                    check1 = v ;
+                  });
+                  print(v.toString());
+                },
                 title: Text(
                     'Do you understand that your name and information will be  checked in our system to confirm that you do not have any  history of animal abuse, neglect, or irresponsible pet ownership? *'),
                 validator: FormBuilderValidators.equal(
@@ -106,6 +115,12 @@ class _PreApplicationState extends State<PreApplication> {
                 name: 'accept',
                 decoration: InputDecoration.collapsed(border: InputBorder.none),
                 initialValue: false,
+                onChanged: (v){
+                  setState(() {
+                    check2 = v ;
+                  });
+                  print(v.toString());
+                },
                 title: Text(
                     'Are you 18 years or older? * (please be prepared to show valid ID) '),
                 validator: FormBuilderValidators.equal(
@@ -136,10 +151,12 @@ class _PreApplicationState extends State<PreApplication> {
                     'zip': zipcode.text,
                     'phone-cell': phoneNumber.text,
                     'phone-home': phoneNumber.text,
-                    'email': email.text
+                    'email': email.text,
+                    'd_1' : check1,
+                    'd_2' : check2
                   });
-               PowerForm().sendDataToPowerForm(    Provider.of<PowerFormProvider>(context, listen: false)
-                   .powerForm , context);
+               // PowerForm().sendDataToPowerForm(    Provider.of<PowerFormProvider>(context, listen: false)
+               //     .powerForm , context);
                   Navigator.push(
                       context, MaterialPageRoute(builder: (context) => AdoptionForm()));
                 },
@@ -180,28 +197,29 @@ class _PreApplicationState extends State<PreApplication> {
         child: buildApp(context));
   }
 
-  Widget textFieldInput(
-      {String label,
+
+}
+Widget textFieldInput(BuildContext context,
+    {String label,
       TextEditingController controller,
       TextInputType keyboardType}) {
-    return FormBuilderTextField(
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        focusedBorder: InputBorder.none,
-        enabledBorder: InputBorder.none,
-        errorBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
-        labelText: label,
-      ),
-      onChanged: (v) {},
-      controller: controller,
-      // valueTransformer: (text) => num.tryParse(text),
-      validator: FormBuilderValidators.compose([
-        FormBuilderValidators.required(context),
-        FormBuilderValidators.numeric(context),
-        FormBuilderValidators.max(context, 70),
-      ]),
-      keyboardType: keyboardType ?? TextInputType.name,
-    );
-  }
+  return FormBuilderTextField(
+    decoration: InputDecoration(
+      border: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      errorBorder: InputBorder.none,
+      disabledBorder: InputBorder.none,
+      labelText: label,
+    ),
+    onChanged: (v) {},
+    controller: controller,
+    // valueTransformer: (text) => num.tryParse(text),
+    validator: FormBuilderValidators.compose([
+      FormBuilderValidators.required(context),
+      FormBuilderValidators.numeric(context),
+      FormBuilderValidators.max(context, 70),
+    ]),
+    keyboardType: keyboardType ?? TextInputType.name,
+  );
 }
